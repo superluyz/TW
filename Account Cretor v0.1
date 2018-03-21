@@ -1,0 +1,107 @@
+// ==UserScript==
+// @name         Account Cretor v0.1
+// @version      0.1
+// @description  Cria contas fakes para o famoso mar de BBs
+// @author       superluyz
+// @include https://*?ref=player_invite_linkrl*
+// @include https://*?welcome=1*
+// @include https://*?screen=overview&intro*
+// @include https://*page/join*
+// @include https://*?screen=settings&mode=account
+// @require https://code.jquery.com/jquery-2.2.4.min.js
+// @run-at document-end
+// ==/UserScript==
+
+var url = ["https://www.tribalwars.com.pt/invite/PTN5EJ9V?ref=player_invite_linkrl, https://www.tribalwars.com.pt/invite/PT7YY5TY?ref=player_invite_linkrl, https://www.tribalwars.com.pt/invite/PTHX9TTS?ref=player_invite_linkrl, https://www.tribalwars.com.pt/invite/PT4RVMGH?ref=player_invite_linkrl, https://www.tribalwars.com.pt/invite/PTNGGVUE?ref=player_invite_linkrl"];
+var mundo = "58";
+var i = 0;
+var urlLen = url.length;
+var name = "";
+
+const caracteres = "abcdefghijklmnopqrstuvxzwy";
+var nameLength = Math.floor(Math.random() * 10) + 5;
+const criarConta = "?ref=player_invite_linkrl";
+const escolherMundo = "?welcome=1";
+const join = "page/join";
+const logado = "?screen=overview&intro";
+const apagar = "?screen=settings&mode=account";
+
+$(window).load(function () {
+    var urlAtual = window.location.href;
+
+    if (urlAtual.indexOf(criarConta) !== -1) {
+        console.log("criou a conta");
+        CriarConta();
+
+    }
+
+    if (urlAtual.indexOf(escolherMundo) !== -1) {
+        console.log("escolheu o mundo");
+        AcessarMundo();
+    }
+
+    if (urlAtual.indexOf(join) !== -1) {
+        console.log("entrou no mundo");
+        Entrar();
+    }
+
+    if (urlAtual.indexOf(logado) !== -1) {
+        window.location.href = "https://pt58.tribalwars.com.pt/game.php?screen=settings&mode=account";
+    }
+
+    if (urlAtual.indexOf(apagar) !== -1) {
+    	ApagarConta();
+    	setTimeout(function() {
+    	if(i < urlLen){
+        	window.location.href = url[i/4];
+        	i++;
+        	}, 1000);
+        }
+    }
+
+});
+
+//primeiro passo, preencher o form para criar a conta
+function Criarnome(){
+	for (let i = 0; i < nameLength; i++) {
+        let randomNumber = Math.floor(Math.random() * 25);
+        name += caracteres[randomNumber];
+    }
+}
+
+function CriarConta() {
+    $("#register_username").val(name);
+    $("#register_password").val(name + "1234");
+    $("#register_email").val(name + "@" + name + ".com");
+    $("#terms").prop("checked", true);
+
+    $(".btn-register").on("click", function (e) {
+        e.preventDefault();
+
+        $(":submit").click();
+
+    });
+
+    $(".btn-register").trigger("click");
+}
+
+function Entrar() {
+	$(".btn").trigger("click");
+}
+
+//acessa o mundo
+function AcessarMundo() {
+    $("a").each(function () {
+        if (this.href.endsWith(mundo)) {
+            window.location.href = this.href;
+        }
+    });
+}
+
+function ApagarConta() {
+
+    $(".password").val();
+    $(".btn").trigger("click");
+}
+
+
